@@ -1,7 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  return new PrismaClient().$extends({
+    query: {
+      cart: {
+        async update({ args, query }) {
+          args.data = { ...args.data, updatedAt: new Date() };
+          return query(args);
+        },
+      },
+    },
+  });
 };
 
 declare global {
